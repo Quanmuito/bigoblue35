@@ -1,3 +1,5 @@
+# https://codeforces.com/problemset/problem/387/B
+
 def solution(m, n, arrA, arrB):
     i = 0
     j = 0

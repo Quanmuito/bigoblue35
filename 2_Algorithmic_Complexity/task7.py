@@ -1,3 +1,5 @@
+# https://codeforces.com/problemset/problem/892/B
+
 def solution(n, arr):
     alive = 0
     i = left = n - 1

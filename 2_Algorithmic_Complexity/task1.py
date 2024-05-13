@@ -1,3 +1,5 @@
+# https://codeforces.com/problemset/problem/224/B
+
 def solution(n, k, arr):
     distinct = {}
     count = 0

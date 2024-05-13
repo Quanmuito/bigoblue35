@@ -1,3 +1,5 @@
+# https://codeforces.com/problemset/problem/381/A
+
 def isEven(num): return num % 2 == 0
 
 def solution(n: int, arr: list):

@@ -1,3 +1,5 @@
+# https://codeforces.com/problemset/problem/6/C
+
 def solution(n: int, arr: list):
     totalA = totalB = 1
     timeA = timeB = 0

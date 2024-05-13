@@ -1,3 +1,5 @@
+# https://codeforces.com/problemset/problem/279/B
+
 def solution(n, t, arr):
     max = 0
     nbrOfBooks = 0
