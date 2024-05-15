@@ -1,20 +1,30 @@
-def solve():
-    stack = [(A[i], i) for i in range(N)]
+# https://basecamp.eolymp.com/en/problems/1108
+# Complexity: O(T * V * E). T for test cases, V for vertices, E for edges
 
-    time = 0
-    while len(stack) > 0:
-        highestPrior = max(stack)
-        firstJob = stack.pop(0)
+MAX = 1005
+INF = int(1e9)
 
-        if highestPrior[0] == firstJob[0]:
-            time += 1
-            if firstJob[1] == M: return time
+def BellmanFord(start, n):
+    dist[start] = 0
 
-        else: stack.append(firstJob)
+    for i in range(n): # i run from 0 -> n - 2: n - 1 times
+        for u, v, w in graph:
+            if dist[u] != INF and dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+                if i == n - 1: # Run the Nth time, if dist still update -> negative cycle
+                    return True
 
-T = int(input().strip())
+    return False
 
-for _ in range(T):
-    N, M = map(int, input().strip().split(' '))
-    A = list(map(int, input().strip().split(' ')))
-    print(solve())
+c = int(input().strip())
+for _ in range(c):
+    n, m = map(int, input().strip().split(' '))
+    graph = []
+    dist = [INF for _ in range(MAX)]
+
+    for _ in range(m):
+        wormhole = tuple(map(int, input().strip().split(' ')))
+        graph.append(wormhole)
+
+    res = BellmanFord(0, n)
+    print('possible' if res else 'not possible')

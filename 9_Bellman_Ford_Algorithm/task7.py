@@ -1,58 +1,98 @@
-import queue
+# https://www.spoj.com/problems/UCV2013B/
+# Complexity: O(T * Q * N * M)
 
-def BFS(s, f):
-    q = queue.Queue()
-    q.put(s)
-    dist[s] = 0
+INF = int(1e9) + 5
 
-    while not q.empty():
-        u = q.get()
+def BellmanFord(start, n):
+    dist = [INF for _ in range(n)]
+    dist[start] = 0
 
-        for v in graph[u]:
-            if dist[v] == -1:
-                dist[v] = dist[u] + 1
-                q.put(v)
+    for _ in range(n - 1):
+        for u, v, w in graph:
+            dist[v] = min(dist[v], dist[u] + w)
 
-            if v == f:
-                return
+    for u, v, w in graph:
+        if dist[u] != INF and dist[u] + w < dist[v]:
+            dist[v] = -INF
 
-N = int(input().strip())
-input()
+    return dist
 
-for _ in range(N):
-    dict = []
+count = 1
+while True:
+    N = int(input())
+    if N == 0: break
+    names = []
+    graph = []
 
-    while True:
-        word = input()
-        if word == "*": break
-        dict.append(word)
+    for i in range(N):
+        data = input().strip().split(' ')
+        names.append(data.pop(0))
+        for j in range(N):
+            w = int(data[j])
+            if i != j and w == 0:
+                continue
+            if i == j and w >= 0:
+                w = 0
+            graph.append((i, j, w))
 
-    V = len(dict)
-    graph = [[] for _ in range(V)]
+    Q = int(input())
+    print("Case #{}:".format(count))
+    for _ in range(Q):
+        start, end = map(int, input().strip().split(' '))
+        dist = BellmanFord(start, N)
+        if dist[end] == -INF: print('NEGATIVE CYCLE')
+        else: print("{}-{} {}".format(names[start], names[end], 'NOT REACHABLE' if dist[end] == INF else dist[end]))
+    count += 1
 
-    for u in range(V - 1):
-        for v in range(u + 1, V):
-            if len(dict[u]) == len(dict[v]):
-                count = 0
+# Optimize: O(T * N^2 * M)
+INF = 100 * (1 << 30) + 7     # Should be large enough
 
-                for i in range(len(dict[u])):
-                    if dict[u][i] != dict [v][i]: count += 1
+def BellmanFord(s):
+    dist[s][s] = 0
 
-                if count == 1:
-                    graph[u].append(v)
-                    graph[v].append(u)
+    for _ in range(n - 1):
+        for edge in graph:
+            u, v, w = edge
+            if dist[s][u] != INF and dist[s][u] + w < dist[s][v]:
+                dist[s][v] = dist[s][u] + w
 
-    while True:
-        try:
-            line = input()
-            if line == '': break
-        except EOFError: break
+    for _ in range(n - 1):
+        for edge in graph:
+            u, v, w = edge
+            if dist[s][u] != INF and dist[s][u] + w < dist[s][v]:
+                dist[s][v] = -INF
 
-        sWord, fWord = line.split()
-        s = dict.index(sWord)
-        f = dict.index(fWord)
-        dist = [-1] * V
-        BFS(s, f)
-        print(f"{sWord} {fWord} {dist[f]}")
+tc = 1
+while True:
+    n = int(input())
+    if n == 0:
+        break
 
-    print()
+    monuments = []
+    graph = []
+    dist = [[INF] * n for _ in range(n)]
+
+    for i in range(n):
+        name, *weights = input().split()
+        monuments.append(name)
+        for j in range(n):
+            w = int(weights[j])
+            if i != j and w == 0:
+                continue
+            if i == j and w >= 0:
+                w = 0
+            graph.append((i, j, w))
+
+    for i in range(n):
+        BellmanFord(i)
+
+    print('Case #{}:'.format(tc))
+    tc += 1
+    q = int(input())
+
+    for _ in range(q):
+        u, v = map(int, input().split())
+        if dist[u][v] <= -INF:
+            print('NEGATIVE CYCLE')
+        else:
+            print('{}-{} {}'.format(monuments[u], monuments[v], 'NOT REACHABLE' if dist[u][v] == INF else dist[u][v]))

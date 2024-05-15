@@ -1,44 +1,27 @@
-import queue
+# https://www.spoj.com/problems/CHICAGO
+# Complexity: O(T * V * E). T for test cases, V for vertices, E for edges
 
-dr = [0, 0, 1, -1]
-dc = [1, -1, 0, 0]
+MAX = 105
 
-def isValid(r, c):
-    return r in range(R) and c in range(C)
+def BellmanFord(start):
+    dist[start] = 1.0
 
-def BFS(start):
-    q = queue.Queue()
-    q.put(start)
-    visited[start[0]][start[1]] = True
-
-    while not q.empty():
-        u = q.get()
-
-        for i in range(4):
-            r = u[0] + dr[i]
-            c = u[1] + dc[i]
-
-            if isValid(r, c) and graph[r][c] == '.' and not visited[r][c]:
-                visited[r][c] = True
-                q.put((r, c))
+    for _ in range(n - 1):
+        for u, v, w in graph:
+            dist[u] = max(dist[u], dist[v] * w)
+            dist[v] = max(dist[v], dist[u] * w)
 
 while True:
-    R, C = map(int, input().strip().split(' '))
+    data = input().strip()
+    if data == '0': break
 
-    if R == 0 and C == 0: break
+    n, m = map(int, data.split())
+    graph = []
+    dist = [-1.0 for _ in range(MAX)]
 
-    graph = [['.'] * C for _ in range(R)]
-    visited = [[False] * C for _ in range(R)]
-    print(graph)
-    bombRow = int(input().strip())
-    for _ in range(bombRow):
-        _input = list(map(int, input().strip().split(' ')))
-        r = _input.pop(0)
-        n = _input.pop(0)
-        for c in _input:
-            graph[r][c] = '*'
+    for _ in range(m):
+        a, b, p = map(int, input().strip().split())
+        graph.append((a, b, p / 100))
 
-    start = tuple(map(int, input().strip().split(' ')))
-    end = tuple(map(int, input().strip().split(' ')))
-
-    for line in graph: print(line)
+    BellmanFord(1)
+    print("{:.6f} percent".format(dist[n] * 100))
